@@ -1,0 +1,231 @@
+basePath: /
+definitions:
+  handlers.AddTaskRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  handlers.GetTasksResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  handlers.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  handlers.RefreshTokenResponse:
+    properties:
+      refreshToken:
+        type: string
+    type: object
+  handlers.RegisterUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.TokensResponse:
+    properties:
+      refreshToken:
+        type: string
+      token:
+        type: string
+    type: object
+  handlers.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  models.Task:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple todo list API
+  title: todolist-API
+  version: "0.1"
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Get all tasks
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit number
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.GetTasksResponse'
+      summary: Get all tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Add a new task
+      parameters:
+      - description: Task object that needs to be added
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AddTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.Task'
+      summary: Add a new task
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a task
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      summary: Delete a task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update a task
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Task object that needs to be updated
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.Task'
+      summary: Update a task
+      tags:
+      - tasks
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: User object that needs to be logged in
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TokensResponse'
+      summary: Login a user
+      tags:
+      - users
+  /users/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh a token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.RefreshTokenResponse'
+      security:
+      - Bearer: []
+      summary: Refresh a token
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User object that needs to be registered
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TokensResponse'
+      summary: Register a new user
+      tags:
+      - users
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"
